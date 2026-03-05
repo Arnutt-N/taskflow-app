@@ -1,44 +1,25 @@
-import type { Metadata } from 'next'
-import { Inter, Noto_Sans_Thai } from 'next/font/google'
-import { AuthProvider } from '@/components/providers/AuthProvider'
-import './globals.css'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { Providers } from '@/components/providers';
+import './globals.css';
 
-// Font optimization (Next.js 16)
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
-
-const notoSansThai = Noto_Sans_Thai({
-  subsets: ['thai'],
-  variable: '--font-noto-thai',
-  weight: ['300', '400', '500', '600', '700'],
-})
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'Engineering Taskflow - Task Management Dashboard',
-  description: 'Engineering task management and project tracking dashboard',
-  keywords: ['task', 'project', 'management', 'dashboard', 'engineering'],
-  authors: [{ name: 'ToppLab' }],
-  creator: 'ToppLab',
-  openGraph: {
-    title: 'Engineering Taskflow - Task Management Dashboard',
-    description: 'Engineering task management and project tracking dashboard',
-    type: 'website',
-    locale: 'th_TH',
-  },
-}
+  title: 'Engineering Taskflow',
+  description: 'Task management and project tracking dashboard',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="th" className={`${inter.variable} ${notoSansThai.variable}`}>
-      <body className="font-sans antialiased">
-        <AuthProvider>{children}</AuthProvider>
+    <html lang="th" className={inter.variable}>
+      <body className="font-sans antialiased bg-slate-50">
+        <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

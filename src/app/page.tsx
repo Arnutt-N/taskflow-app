@@ -1,75 +1,32 @@
-'use client';
+import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { redirect } from 'next/navigation';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
-import { Sidebar, Header, DashboardView, ProjectsView, TasksView } from '@/components';
-import { useDashboardData } from '@/hooks/useDashboardData';
+export default async function HomePage() {
+  const session = await auth();
+  
+  if (!session) {
+    redirect('/login');
+  }
 
-export default function TaskFlowDashboard() {
-  const {
-    projects,
-    tasks,
-    enrichedProjects,
-    stats,
-    filteredTasks,
-    activeTab,
-    selectedProjectId,
-    searchQuery,
-    onlyMyTasks,
-    currentPage,
-    setSearchQuery,
-    setCurrentPage,
-    handleTabChange,
-    handleDrillDown,
-    clearProjectFilter,
-  } = useDashboardData();
-
-  return (
-    <div className="flex h-screen bg-[#f8fafc] font-sans overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar 
-        activeTab={activeTab}
-        onlyMyTasks={onlyMyTasks}
-        onTabChange={handleTabChange}
-      />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header activeTab={activeTab} />
-
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              projects={enrichedProjects}
-              stats={stats}
-              selectedProjectId={selectedProjectId}
-              onProjectClick={handleDrillDown}
-              onClearFilter={clearProjectFilter}
-              onViewTasks={() => handleTabChange('tasks', false)}
-            />
-          )}
-
-          {activeTab === 'projects' && (
-            <ProjectsView
-              projects={enrichedProjects}
-              selectedProjectId={selectedProjectId}
-              onProjectClick={handleDrillDown}
-            />
-          )}
-
-          {activeTab === 'tasks' && (
-            <TasksView
-              tasks={filteredTasks}
-              projects={projects}
-              selectedProjectId={selectedProjectId}
-              onlyMyTasks={onlyMyTasks}
-              searchQuery={searchQuery}
-              currentPage={currentPage}
-              onSearchChange={setSearchQuery}
-              onPageChange={setCurrentPage}
-              onClearFilter={clearProjectFilter}
-            />
-          )}
-        </main>
+  return <DashboardLayout >;
+    <div className="p-8">
+      <h1 className="text-2xl font-bold text-slate-800 mb-4">
+        Welcome back, {session.user.name}!
+      </h1>
+      <p className="text-slate-600">
+        Engineering Taskflow v2 is under construction. 🚧
+      </p>
+      <div className="mt-8 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
+        <h2 className="font-semibold text-slate-700 mb-2">What's New</h2>
+        <ul className="list-disc list-inside text-slate-600 space-y-1">
+          <li>NextAuth v5 with Prisma</li>
+          <li>Protected routes with middleware</li>
+          <li>User management (Admin only)</li>
+          <li>Notification system</li>
+          <li>New UI coming soon...</li>
+        </ul>
       </div>
     </div>
-  );
+  </DashboardLayout>;
 }

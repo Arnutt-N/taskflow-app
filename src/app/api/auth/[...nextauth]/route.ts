@@ -1,27 +1,71 @@
-// app/api/auth/[...nextauth]/route.ts
-import { NextRequest } from 'next/server';
-import * as authHandlers from '@/auth';
-import { rateLimiters, checkRateLimit } from '@/lib/rateLimit';
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+import { prisma } from '@/lib/prisma';
 
-// Get original handlers
-const originalGET = authHandlers.GET;
-const originalPOST = authHandlers.POST;
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth({
+  providers: [
+    Credentials({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
-// Wrap POST with rate limiting (for login attempts)
-async function POST(req: NextRequest): Promise<Response> {
-  // 🔒 SECURITY: Rate limit login attempts to prevent brute force
-  // Skip in test environment to avoid flaky E2E tests
-  if (process.env.NODE_ENV !== 'test' && process.env.PLAYWRIGHT !== '1') {
-    const rateLimitResponse = await checkRateLimit(req, rateLimiters.auth);
-    if (rateLimitResponse) {
-      return rateLimitResponse;
-    }
-  }
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
 
-  // Forward to original NextAuth handler
-  return originalPOST(req);
-}
+        if (!user) return null;
 
-// Export GET as-is, POST with rate limiting
-export const GET = originalGET;
-export { POST };
+        const isValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        );
+
+        if (!isValid) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          image: user.avatar,
+        };
+      },
+    }),
+  ],
+  pages: {
+    signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+});
