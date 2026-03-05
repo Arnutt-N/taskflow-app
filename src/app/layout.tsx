@@ -16,14 +16,14 @@ const notoSansThai = Noto_Sans_Thai({
 })
 
 export const metadata: Metadata = {
-  title: 'TaskFlow - Task Management Dashboard',
-  description: 'Task management and project tracking dashboard',
-  keywords: ['task', 'project', 'management', 'dashboard'],
+  title: 'Engineering Taskflow - Task Management Dashboard',
+  description: 'Engineering task management and project tracking dashboard',
+  keywords: ['task', 'project', 'management', 'dashboard', 'engineering'],
   authors: [{ name: 'ToppLab' }],
   creator: 'ToppLab',
   openGraph: {
-    title: 'TaskFlow - Task Management Dashboard',
-    description: 'Task management and project tracking dashboard',
+    title: 'Engineering Taskflow - Task Management Dashboard',
+    description: 'Engineering task management and project tracking dashboard',
     type: 'website',
     locale: 'th_TH',
   },

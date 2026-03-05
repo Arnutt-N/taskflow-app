@@ -1,9 +1,10 @@
 // components/layout/Header.tsx
 'use client';
 
-import { Bell } from 'lucide-react';
+import { Bell, LogOut } from 'lucide-react';
 import { getTodayLabel } from '@/lib/utils';
 import { TabType } from '@/types';
+import { signOut } from 'next-auth/react';
 
 interface HeaderProps {
   activeTab: TabType;
@@ -36,7 +37,18 @@ export const Header = ({ activeTab }: HeaderProps) => (
          <Bell className="w-5 h-5"/>
          <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white" />
       </button>
-      <div className="h-8 w-px bg-slate-200" />
+      
+      <!-- Logout button for mobile/tablet -->
+      <button 
+        type="button"
+        onClick={() => signOut({ callbackUrl: '/login' })}
+        className="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-600 transition-colors shadow-sm lg:hidden"
+        title="Logout"
+      >
+         <LogOut className="w-5 h-5"/>
+      </button>
+      
+      <div className="h-8 w-px bg-slate-200 hidden lg:block" />
       <p className="text-sm font-medium text-slate-500 hidden sm:block">{getTodayLabel()}</p>
     </div>
   </header>

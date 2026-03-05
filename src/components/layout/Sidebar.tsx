@@ -33,7 +33,7 @@ export const Sidebar = ({ activeTab, onlyMyTasks, onTabChange }: SidebarProps) =
            <Zap className="w-6 h-6 fill-current" />
          </div>
          <span className="ml-3 font-bold text-xl hidden lg:block tracking-tight text-slate-900">
-           Nova<span className="text-indigo-600">Task</span>
+           Engineering<span className="text-indigo-600">Taskflow</span>
          </span>
       </div>
 

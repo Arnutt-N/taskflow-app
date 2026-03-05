@@ -48,7 +48,7 @@ export default function LoginClientPage() {
             <Zap className="w-8 h-8 text-white fill-current" />
           </div>
           <h1 className="text-2xl font-bold text-slate-800">
-            Nova<span className="text-indigo-600">Task</span>
+            Engineering<span className="text-indigo-600">Taskflow</span>
           </h1>
           <p className="text-slate-500 mt-1">Sign in to your account</p>
         </div>
