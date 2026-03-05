@@ -38,7 +38,7 @@ export const Header = ({ activeTab }: HeaderProps) => (
          <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white" />
       </button>
       
-      <!-- Logout button for mobile/tablet -->
+      {/* Logout button for mobile/tablet */}
       <button 
         type="button"
         onClick={() => signOut({ callbackUrl: '/login' })}
