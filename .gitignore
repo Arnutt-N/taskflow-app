@@ -22,7 +22,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# environment files with secrets (NEVER commit these!)
+.env
+.env.local
+.env.development
+.env.production
 .env*.local
 
 # data files (JSON storage)
@@ -34,3 +38,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# uploads (user data)
+/uploads/*.xlsx
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
