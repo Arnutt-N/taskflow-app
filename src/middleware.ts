@@ -12,10 +12,8 @@ export function middleware(request: NextRequest) {
   }
 
   // Check for any NextAuth session cookie
-  const cookies = request.cookies;
-  const hasSession = Array.from(cookies.keys()).some(key => 
-    key.includes('next-auth') || key.includes('authjs')
-  );
+  const cookieHeader = request.headers.get('cookie') || '';
+  const hasSession = cookieHeader.includes('next-auth') || cookieHeader.includes('authjs');
 
   // Redirect to login if no session
   if (!hasSession) {
