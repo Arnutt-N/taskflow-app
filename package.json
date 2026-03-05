@@ -20,7 +20,8 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:seed": "tsx src/lib/seed.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:migrate-legacy": "tsx scripts/migrate-data.ts"
   },
   "dependencies": {
     "@prisma/client": "^7.4.2",
