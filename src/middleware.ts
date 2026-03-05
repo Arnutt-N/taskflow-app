@@ -1,33 +1,25 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Simple auth check via cookie
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionToken = request.cookies.get('next-auth.session-token')?.value;
-  const isLoggedIn = !!sessionToken;
 
-  const isPublicRoute = ['/login', '/register'].includes(pathname);
-  const isApiAuthRoute = pathname.startsWith('/api/auth');
-
-  // Allow auth API routes
-  if (isApiAuthRoute) {
+  // Allow these paths without auth
+  const publicPaths = ['/login', '/api/auth', '/_next', '/favicon', '/api/seed'];
+  
+  if (publicPaths.some(p => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
-  // Allow static files
-  if (pathname.startsWith('/_next') || pathname.startsWith('/favicon')) {
-    return NextResponse.next();
-  }
+  // Check for any NextAuth session cookie
+  const cookies = request.cookies;
+  const hasSession = Array.from(cookies.keys()).some(key => 
+    key.includes('next-auth') || key.includes('authjs')
+  );
 
-  // Redirect to login if not authenticated
-  if (!isLoggedIn && !isPublicRoute) {
+  // Redirect to login if no session
+  if (!hasSession) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // Redirect logged-in users away from login page
-  if (isLoggedIn && isPublicRoute) {
-    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
