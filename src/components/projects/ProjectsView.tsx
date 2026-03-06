@@ -1,8 +1,12 @@
 // components/projects/ProjectsView.tsx
 'use client';
 
-import { FolderKanban, Users, Clock, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { FolderKanban, Users, Clock, TrendingUp, LayoutGrid, TableProperties, CalendarDays, BarChartHorizontal } from 'lucide-react';
 import { StatusBadge } from '@/components/ui';
+import { ProjectKanbanView } from './ProjectKanbanView';
+import { ProjectCalendarView } from './ProjectCalendarView';
+import { ProjectGanttView } from './ProjectGanttView';
 import { Project } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 
@@ -12,27 +16,73 @@ interface ProjectsViewProps {
   selectedProjectId: string | null;
 }
 
-export const ProjectsView = ({ projects, onProjectClick, selectedProjectId }: ProjectsViewProps) => (
-  <div className="space-y-6 animate-in max-w-screen-2xl mx-auto pb-10">
-    <div className="flex items-center justify-between">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Projects Portfolio</h2>
-        <p className="text-slate-500 text-sm">ภาพรวมโปรเจกต์ทั้งหมด พร้อมสถานะและความคืบหน้า</p>
-      </div>
-    </div>
+export const ProjectsView = ({ projects, onProjectClick, selectedProjectId }: ProjectsViewProps) => {
+  const [viewType, setViewType] = useState<'table' | 'kanban' | 'calendar' | 'gantt'>('table');
 
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      {projects.map(project => (
-        <ProjectCard 
-          key={project.id}
-          project={project}
-          onClick={() => onProjectClick(project.id)}
-          active={selectedProjectId === project.id}
-        />
-      ))}
+  return (
+    <div className="space-y-6 animate-in max-w-screen-2xl mx-auto pb-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Projects Portfolio</h2>
+          <p className="text-slate-500 text-sm">ภาพรวมโปรเจกต์ทั้งหมด พร้อมสถานะและความคืบหน้า</p>
+        </div>
+
+        {/* View Switcher */}
+        <div className="flex bg-slate-100 p-1 rounded-lg w-fit">
+          <button
+            onClick={() => setViewType('table')}
+            className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'table' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <TableProperties className="w-4 h-4" /> Cards
+          </button>
+          <button
+            onClick={() => setViewType('kanban')}
+            className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'kanban' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <LayoutGrid className="w-4 h-4" /> Kanban
+          </button>
+          <button
+            onClick={() => setViewType('gantt')}
+            className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'gantt' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <BarChartHorizontal className="w-4 h-4" /> Gantt
+          </button>
+          <button
+            onClick={() => setViewType('calendar')}
+            className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'calendar' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          >
+            <CalendarDays className="w-4 h-4" /> Calendar
+          </button>
+        </div>
+      </div>
+
+      {viewType === 'table' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {projects.map(project => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onClick={() => onProjectClick(project.id)}
+              active={selectedProjectId === project.id}
+            />
+          ))}
+        </div>
+      )}
+
+      {viewType === 'kanban' && (
+        <ProjectKanbanView projects={projects} onProjectClick={onProjectClick} />
+      )}
+
+      {viewType === 'calendar' && (
+        <ProjectCalendarView projects={projects} onProjectClick={onProjectClick} />
+      )}
+
+      {viewType === 'gantt' && (
+        <ProjectGanttView projects={projects} onProjectClick={onProjectClick} />
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 // Project Card Component
 interface ProjectCardProps {
@@ -49,9 +99,8 @@ const ProjectCard = ({ project, onClick, active }: ProjectCardProps) => {
     <button
       type="button"
       onClick={onClick}
-      className={`bg-white rounded-2xl p-6 shadow-clean border text-left transition-all hover:shadow-lg ${
-        active ? 'border-indigo-200 ring-1 ring-indigo-50' : 'border-slate-100 hover:border-slate-200'
-      }`}
+      className={`bg-white rounded-2xl p-6 shadow-clean border text-left transition-all hover:shadow-lg ${active ? 'border-indigo-200 ring-1 ring-indigo-50' : 'border-slate-100 hover:border-slate-200'
+        }`}
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
@@ -77,11 +126,10 @@ const ProjectCard = ({ project, onClick, active }: ProjectCardProps) => {
           <span className="font-semibold text-slate-700">{project.progress}%</span>
         </div>
         <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-          <div 
-            className={`h-full rounded-full transition-all duration-500 ${
-              project.progress === 100 ? 'bg-emerald-500' : 
-              project.progress > 50 ? 'bg-indigo-500' : 'bg-amber-400'
-            }`}
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${project.progress === 100 ? 'bg-emerald-500' :
+                project.progress > 50 ? 'bg-indigo-500' : 'bg-amber-400'
+              }`}
             style={{ width: `${project.progress}%` }}
           />
         </div>

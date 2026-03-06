@@ -22,8 +22,10 @@ export interface Task {
   projectId: string;
   title: string;
   assignee: string;
-  status: 'Done' | 'In Progress' | 'Todo' | 'Planning';
+  status: 'Done' | 'In Progress' | 'Todo' | 'Planning' | 'Review' | 'Blocked';
   priority: 'High' | 'Medium' | 'Low' | 'Critical';
+  dueDate?: string;
+  createdAt?: string;
 }
 
 export interface DashboardData {

@@ -2,8 +2,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Filter, ListTodo, Trash2 } from 'lucide-react';
+import { Search, Filter, ListTodo, Trash2, LayoutGrid, TableProperties, CalendarDays, BarChartHorizontal } from 'lucide-react';
 import { StatusBadge, Avatar, Pagination } from '@/components/ui';
+import { TaskKanbanView } from './TaskKanbanView';
+import { TaskCalendarView } from './TaskCalendarView';
+import { TaskGanttView } from './TaskGanttView';
 import { Task, Project } from '@/types';
 import { ITEMS_PER_PAGE } from '@/lib/constants';
 
@@ -32,6 +35,7 @@ export const TasksView = ({
 }: TasksViewProps) => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [viewType, setViewType] = useState<'table' | 'kanban' | 'calendar' | 'gantt'>('table');
 
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
@@ -97,7 +101,7 @@ export const TasksView = ({
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
           />
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-slate-400" />
           <select
@@ -126,59 +130,101 @@ export const TasksView = ({
         </div>
       </div>
 
-      {/* Tasks Table */}
-      <div className="bg-white rounded-xl shadow-clean border border-slate-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-100">
-              <tr>
-                <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Task</th>
-                <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell">Project</th>
-                <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Assignee</th>
-                <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Priority</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {paginatedTasks.map(task => (
-                <tr key={task.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-slate-800">{task.title}</p>
-                    <p className="text-xs text-slate-400 md:hidden mt-1">{getProjectName(task.projectId)}</p>
-                  </td>
-                  <td className="px-6 py-4 hidden md:table-cell">
-                    <p className="text-sm text-slate-600 truncate max-w-[200px]">{getProjectName(task.projectId)}</p>
-                  </td>
-                  <td className="px-6 py-4 hidden sm:table-cell">
-                    <div className="flex items-center gap-2">
-                      <Avatar name={task.assignee} />
-                      <span className="text-sm text-slate-700">{task.assignee}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <StatusBadge status={task.status} />
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase ${priorityColors[task.priority] || 'bg-gray-50 text-gray-600'}`}>
-                      {task.priority}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={filteredTasks.length}
-            itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={onPageChange}
-          />
-        )}
+      {/* View Switcher */}
+      <div className="flex bg-slate-100 p-1 rounded-lg w-fit">
+        <button
+          onClick={() => setViewType('table')}
+          className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'table' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          <TableProperties className="w-4 h-4" /> Table
+        </button>
+        <button
+          onClick={() => setViewType('kanban')}
+          className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'kanban' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          <LayoutGrid className="w-4 h-4" /> Kanban
+        </button>
+        <button
+          onClick={() => setViewType('gantt')}
+          className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'gantt' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          <BarChartHorizontal className="w-4 h-4" /> Gantt
+        </button>
+        <button
+          onClick={() => setViewType('calendar')}
+          className={`px-4 py-2 text-sm font-medium rounded-md flex items-center gap-2 transition-colors ${viewType === 'calendar' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          <CalendarDays className="w-4 h-4" /> Calendar
+        </button>
       </div>
+
+      {/* Main Content Area based on ViewType */}
+      {viewType === 'table' && (
+        <div className="bg-white rounded-xl shadow-clean border border-slate-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50 border-b border-slate-100">
+                <tr>
+                  <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Task</th>
+                  <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider hidden md:table-cell">Project</th>
+                  <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Assignee</th>
+                  <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="text-left px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Priority</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {paginatedTasks.map(task => (
+                  <tr key={task.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-medium text-slate-800">{task.title}</p>
+                      <p className="text-xs text-slate-400 md:hidden mt-1">{getProjectName(task.projectId)}</p>
+                    </td>
+                    <td className="px-6 py-4 hidden md:table-cell">
+                      <p className="text-sm text-slate-600 truncate max-w-[200px]">{getProjectName(task.projectId)}</p>
+                    </td>
+                    <td className="px-6 py-4 hidden sm:table-cell">
+                      <div className="flex items-center gap-2">
+                        <Avatar name={task.assignee} />
+                        <span className="text-sm text-slate-700">{task.assignee}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <StatusBadge status={task.status} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase ${priorityColors[task.priority] || 'bg-gray-50 text-gray-600'}`}>
+                        {task.priority}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredTasks.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={onPageChange}
+            />
+          )}
+        </div>
+      )}
+
+      {viewType === 'kanban' && (
+        <TaskKanbanView tasks={filteredTasks} />
+      )}
+
+      {viewType === 'calendar' && (
+        <TaskCalendarView tasks={filteredTasks} />
+      )}
+
+      {viewType === 'gantt' && (
+        <TaskGanttView tasks={filteredTasks} projects={projects} />
+      )}
 
       {filteredTasks.length === 0 && (
         <div className="text-center py-12 bg-white rounded-xl border border-slate-100">
