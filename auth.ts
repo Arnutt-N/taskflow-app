@@ -2,22 +2,9 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
 
-// 🔒 SECURITY: Generate secure bcrypt hash for 'admin123'
-// Run this once: const hash = await bcrypt.hash('admin123', 10);
-// Default hash for 'admin123' with salt rounds 10:
-const ADMIN_PASSWORD_HASH = '$2a$10$M1nhlYzTAhBuJ1NheWsaYu4RcJwV7kRAIbSwrr4Ty4/XjTeUkhKyG';
-
-// Demo users (in production, use database)
-const users = [
-  {
-    id: '1',
-    email: 'admin@taskflow.com',
-    password: ADMIN_PASSWORD_HASH, // bcrypt hash
-    name: 'Admin User',
-    role: 'admin',
-  },
-];
+const prisma = new PrismaClient();
 
 export const {
   handlers: { GET, POST },
@@ -37,18 +24,25 @@ export const {
           return null;
         }
 
-        const user = users.find((u) => u.email === credentials.email);
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email as string },
+        });
 
         if (!user) {
-          // 🔒 SECURITY: Use generic error message to prevent user enumeration
           return null;
         }
 
-        // 🔒 SECURITY: Use bcrypt for password verification
-        const isValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
+        // Support both bcrypt hash and plain text (for migration)
+        let isValid = false;
+        if (user.password.startsWith('$2')) {
+          isValid = await bcrypt.compare(
+            credentials.password as string,
+            user.password
+          );
+        } else {
+          isValid = credentials.password === user.password;
+        }
+        
         if (!isValid) {
           return null;
         }
