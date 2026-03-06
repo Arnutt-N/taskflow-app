@@ -42,7 +42,7 @@ export const {
         } else {
           isValid = credentials.password === user.password;
         }
-        
+
         if (!isValid) {
           return null;
         }
@@ -90,7 +90,6 @@ export const {
       return session;
     },
   },
-  // 🔒 SECURITY: Additional security settings
   secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
   trustHost: true,
 });
