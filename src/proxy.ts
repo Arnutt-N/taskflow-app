@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export const config = {
-  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
 
 export function proxy(req: NextRequest) {
@@ -12,7 +12,11 @@ export function proxy(req: NextRequest) {
   
   const isLoggedIn = !!token;
 
-  const publicRoutes = ['/login', '/api/auth'];
+  if (nextUrl.pathname.startsWith('/api/auth')) {
+    return NextResponse.next();
+  }
+
+  const publicRoutes = ['/login'];
   const isPublicRoute = publicRoutes.some((route) =>
     nextUrl.pathname.startsWith(route)
   );
