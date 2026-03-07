@@ -11,16 +11,19 @@ export async function GET() {
 
   const tasks = await prisma.task.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { project: { select: { name: true } } },
+    include: { 
+      project: { select: { name: true } },
+      assignee: { select: { name: true } }
+    },
   });
 
   const rows = tasks.map(t => ({
     'Task ID': t.id,
     'Title': t.title,
-    'Project': (t as { project?: { name?: string } }).project?.name ?? '',
+    'Project': t.project?.name ?? '',
     'Status': t.status,
     'Priority': t.priority,
-    'Assignee': t.assignee ?? '',
+    'Assignee': t.assignee?.name ?? '',
     'Due Date': t.dueDate ? new Date(t.dueDate).toLocaleDateString('th-TH') : '',
     'Created At': new Date(t.createdAt).toLocaleDateString('th-TH'),
   }));
