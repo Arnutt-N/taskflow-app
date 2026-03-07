@@ -26,6 +26,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             duration: 4000,
             classNames: {
               toast: 'font-sans text-sm rounded-xl border border-slate-100 shadow-lg',
+              closeButton: 'hidden',
             },
           }}
         />
