@@ -4,12 +4,13 @@ import { Task } from '@/types';
 import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { th } from 'date-fns/locale';
+import { th, enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useMemo } from 'react';
 
 const locales = {
     'th': th,
-    'en-US': require('date-fns/locale/en-US')
+    'en-US': enUS
 };
 
 const localizer = dateFnsLocalizer({

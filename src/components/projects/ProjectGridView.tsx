@@ -121,7 +121,11 @@ export const ProjectGridView = ({ projects, onProjectClick, selectedProjectId }:
   const toggleSelect = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const next = new Set(selectedProjects);
-    next.has(id) ? next.delete(id) : next.add(id);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
     setSelectedProjects(next);
   };
 

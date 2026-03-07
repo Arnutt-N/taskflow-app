@@ -5,13 +5,14 @@ import { Project } from '@/types';
 import { Calendar, dateFnsLocalizer, Event, Views } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { th } from 'date-fns/locale';
+import { th, enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Search, Filter, Calendar as CalendarIcon, Users, Clock, AlignLeft } from 'lucide-react';
 import { StatusBadge } from '@/components/ui';
 
 const locales = {
     'th': th,
-    'en-US': require('date-fns/locale/en-US')
+    'en-US': enUS
 };
 
 const localizer = dateFnsLocalizer({

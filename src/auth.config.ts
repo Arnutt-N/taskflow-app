@@ -9,6 +9,17 @@ export const authConfig = {
         strategy: 'jwt',
         maxAge: 30 * 24 * 60 * 60, // 30 days
     },
+    cookies: {
+        sessionToken: {
+            name: `__Secure-next-auth.session-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true, // Required for Vercel HTTPS
+            },
+        },
+    },
     callbacks: {
         async jwt({ token, user }) {
             if (user) {

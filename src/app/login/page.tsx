@@ -24,18 +24,33 @@ export default function LoginClientPage() {
   const [error, setError] = useState('');
 
   const doSignIn = async (loginEmail: string, loginPassword: string, label?: string) => {
-    const result = await signIn('credentials', {
-      email: loginEmail,
-      password: loginPassword,
-      redirect: false,
-    });
-    if (result?.error) {
+    try {
+      const result = await signIn('credentials', {
+        email: loginEmail,
+        password: loginPassword,
+        redirect: false,
+      });
+      
+      console.log('SignIn result:', result);
+      
+      if (result?.error) {
+        console.error('SignIn error:', result.error);
+        return false;
+      }
+      
+      toast.success(label ? `Signed in as ${label}` : 'Signed in successfully');
+      
+      // Small delay to ensure toast is shown before redirect
+      setTimeout(() => {
+        console.log('Redirecting to /');
+        window.location.href = '/';
+      }, 500);
+      
+      return true;
+    } catch (err) {
+      console.error('SignIn exception:', err);
       return false;
     }
-    toast.success(label ? `Signed in as ${label}` : 'Signed in successfully');
-    // Use window.location for reliable redirect on production/Vercel
-    window.location.href = '/';
-    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
