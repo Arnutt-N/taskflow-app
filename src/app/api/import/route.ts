@@ -37,8 +37,8 @@ export async function POST(req: NextRequest) {
         await prisma.task.create({
           data: {
             title,
-            status: String(row['Status'] || 'Todo') as 'Todo',
-            priority: String(row['Priority'] || 'Medium') as 'Medium',
+            status: String(row['Status'] || 'TODO') as 'TODO',
+            priority: String(row['Priority'] || 'MEDIUM') as 'MEDIUM',
             assignee: String(row['Assignee'] || ''),
             dueDate: row['Due Date'] ? new Date(String(row['Due Date'])) : null,
           },
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         await prisma.project.create({
           data: {
             name,
-            status: String(row['Status'] || 'Planning') as 'Planning',
+            status: String(row['Status'] || 'TODO') as 'TODO',
             progress: Number(row['Progress (%)'] || 0),
             budget: Number(row['Budget (฿)'] || 0),
             revenue: Number(row['Revenue (฿)'] || 0),
