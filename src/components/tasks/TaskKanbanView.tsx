@@ -221,7 +221,7 @@ export const TaskKanbanView = ({ tasks, onTaskStatusChange }: TaskKanbanViewProp
 
     // Optimistic update
     setLocalTasks(prev =>
-      prev.map(t => t.id === activeId ? { ...t, status: overColId } : t)
+      prev.map(t => t.id === activeId ? { ...t, status: overColId as Task['status'] } : t)
     );
 
     if (onTaskStatusChange) {

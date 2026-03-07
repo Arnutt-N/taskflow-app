@@ -262,7 +262,7 @@ export const ProjectKanbanView = ({ projects, onProjectStatusChange, onProjectCl
     const newDbStatus = overColId === 'Done' ? 'Completed' : overColId;
 
     setLocalProjects(prev =>
-      prev.map(p => p.id === activeId ? { ...p, status: newDbStatus } : p)
+      prev.map(p => p.id === activeId ? { ...p, status: newDbStatus as Project['status'] } : p)
     );
 
     if (onProjectStatusChange) {

@@ -24,23 +24,23 @@ export async function GET() {
 
   // Task completion rate
   const totalTasks = tasks.length;
-  const doneTasks = tasks.filter(t => ['Done', 'Completed'].includes(t.status)).length;
-  const overdueTasks = tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && !['Done', 'Completed'].includes(t.status)).length;
+  const doneTasks = tasks.filter(t => t.status === 'DONE').length;
+  const overdueTasks = tasks.filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE').length;
 
   // Priority breakdown
   const byPriority = {
-    Critical: tasks.filter(t => t.priority === 'Critical').length,
-    High: tasks.filter(t => t.priority === 'High').length,
-    Medium: tasks.filter(t => t.priority === 'Medium').length,
-    Low: tasks.filter(t => t.priority === 'Low').length,
+    Critical: tasks.filter(t => t.priority === 'CRITICAL').length,
+    High: tasks.filter(t => t.priority === 'HIGH').length,
+    Medium: tasks.filter(t => t.priority === 'MEDIUM').length,
+    Low: tasks.filter(t => t.priority === 'LOW').length,
   };
 
   // Status distribution
   const byStatus = {
-    Todo: tasks.filter(t => t.status === 'Todo').length,
-    Planning: tasks.filter(t => t.status === 'Planning').length,
-    'In Progress': tasks.filter(t => t.status === 'In Progress').length,
-    Review: tasks.filter(t => t.status === 'Review').length,
+    Todo: tasks.filter(t => t.status === 'TODO').length,
+    Planning: 0,
+    'In Progress': tasks.filter(t => t.status === 'IN_PROGRESS').length,
+    Review: tasks.filter(t => t.status === 'REVIEW').length,
     Done: doneTasks,
   };
 
@@ -50,11 +50,11 @@ export async function GET() {
   const profitableProjects = projects.filter(p => Number(p.revenue || 0) > Number(p.budget || 0)).length;
 
   // Project health
-  const healthyProjects = projects.filter(p => p.progress >= 70 && p.status !== 'Completed').length;
+  const healthyProjects = projects.filter(p => p.progress >= 70 && p.status !== 'DONE').length;
   const atRiskProjects = projects.filter(p => {
     if (!p.deadline) return false;
     const daysLeft = Math.ceil((new Date(p.deadline).getTime() - Date.now()) / (1000 * 86400));
-    return daysLeft <= 7 && p.progress < 80 && p.status !== 'Completed';
+    return daysLeft <= 7 && p.progress < 80 && p.status !== 'DONE';
   }).length;
 
   // Tasks created per week (last 8 weeks)
@@ -66,7 +66,7 @@ export async function GET() {
     return {
       week: `W-${7 - i}`,
       created: tasks.filter(t => new Date(t.createdAt) >= weekStart && new Date(t.createdAt) < weekEnd).length,
-      done: tasks.filter(t => ['Done', 'Completed'].includes(t.status) && new Date(t.createdAt) >= weekStart && new Date(t.createdAt) < weekEnd).length,
+      done: tasks.filter(t => t.status === 'DONE' && new Date(t.createdAt) >= weekStart && new Date(t.createdAt) < weekEnd).length,
     };
   });
 
