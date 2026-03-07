@@ -9,18 +9,32 @@ async function main() {
     await prisma.task.deleteMany({});
     await prisma.project.deleteMany({});
     
-    // Create base user if none exists
-    let user = await prisma.user.findFirst();
-    if (!user) {
-        user = await prisma.user.create({
-            data: {
-                email: 'test@example.com',
-                name: 'Test Administrator',
-                role: 'ADMIN',
-                password: 'hash' // mock
-            }
-        });
+    // Create base users if none exists
+    const usersData = [
+        { email: 'admin@taskflow.dev', name: 'Admin User', role: 'ADMIN' },
+        { email: 'pm@taskflow.dev', name: 'Project Manager', role: 'PM' },
+        { email: 'lead@taskflow.dev', name: 'Team Lead', role: 'LEAD' },
+        { email: 'staff@taskflow.dev', name: 'Senior Staff', role: 'STAFF' },
+        { email: 'user@taskflow.dev', name: 'General User', role: 'USER' }
+    ];
+
+    const createdUsers = [];
+    for (const u of usersData) {
+        let user = await prisma.user.findUnique({ where: { email: u.email } });
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    email: u.email,
+                    name: u.name,
+                    role: u.role,
+                    password: 'hash' // mock
+                }
+            });
+        }
+        createdUsers.push(user);
     }
+    
+    const [admin, pm, lead, staff, generalUser] = createdUsers;
 
     // Prepare projects data matching full-options visual needs
     const now = new Date();
@@ -93,7 +107,7 @@ async function main() {
         }
     ];
 
-    for (const pData of projectsData) {
+    for (const [index, pData] of projectsData.entries()) {
         // Safe mapping to project status
         let mapStatus = 'TODO';
         if (pData.status === 'IN_PROGRESS') mapStatus = 'IN_PROGRESS';
@@ -113,8 +127,9 @@ async function main() {
                 description: 'Seed project description',
                 tasks: {
                     create: [
-                        { title: 'Task 1 for ' + pData.name, status: 'TODO' },
-                        { title: 'Task 2 for ' + pData.name, status: 'IN_PROGRESS' }
+                        { title: 'Task 1 for ' + pData.name, status: 'TODO', assigneeId: staff.id, priority: 'HIGH' },
+                        { title: 'Task 2 for ' + pData.name, status: 'IN_PROGRESS', assigneeId: lead.id, priority: 'MEDIUM' },
+                        { title: 'Review for ' + pData.name, status: 'REVIEW', assigneeId: pm.id, priority: 'CRITICAL' }
                     ]
                 }
             }

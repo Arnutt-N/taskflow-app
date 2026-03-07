@@ -32,17 +32,30 @@ body {
 /* Thin sidebar scrollbar (no arrows, minimal) */
 .sidebar-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #e2e8f0 transparent;
+  scrollbar-color: transparent transparent; /* Invisible by default Firefox */
+  transition: scrollbar-color 0.3s;
+}
+.sidebar-scroll:hover {
+  scrollbar-color: #e2e8f0 transparent; /* Visible on hover Firefox */
 }
 .sidebar-scroll::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
 }
 .sidebar-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: transparent;
   border-radius: 100px;
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 slightly distinct from background */
+}
+::-webkit-scrollbar-button,
+.sidebar-scroll::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Content area scrollbar */

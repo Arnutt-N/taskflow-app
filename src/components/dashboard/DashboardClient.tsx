@@ -91,17 +91,17 @@ export const DashboardClient = ({ projects, tasks, userName }: DashboardClientPr
       {/* ── 2. KPI Cards (Executive View) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard 
-          label="Total Revenue" 
-          value={`฿${formatNumber(stats.totalRevenue)}`}
-          subtext="รายได้จากโปรเจกต์ทั้งหมด" 
-          icon={TrendingUp} 
-          onClick={() => router.push('/projects')}
-        />
-        <StatCard 
           label="Total Cost" 
           value={`฿${formatNumber(stats.totalCost)}`} 
           subtext="ต้นทุนและค่าใช้จ่ายรวม"
           icon={PieChart} 
+          onClick={() => router.push('/projects')}
+        />
+        <StatCard 
+          label="Total Revenue" 
+          value={`฿${formatNumber(stats.totalRevenue)}`}
+          subtext="รายได้จากโปรเจกต์ทั้งหมด" 
+          icon={TrendingUp} 
           onClick={() => router.push('/projects')}
         />
         <StatCard 

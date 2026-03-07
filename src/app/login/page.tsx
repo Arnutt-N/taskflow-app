@@ -66,63 +66,67 @@ export default function LoginClientPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 flex items-center justify-center p-4">
-      {/* Ambient glow */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-violet-500/15 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      {/* Engineering Grid / Ambient Background */}
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '32px 32px', opacity: 0.5 }}></div>
+      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md relative">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl shadow-2xl shadow-indigo-500/30 mb-4">
-            <Zap className="w-8 h-8 text-white fill-current" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl shadow-xl shadow-indigo-500/30 mb-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/20 blur-md transform rotate-45 translate-x-1/2" />
+            <Zap className="w-8 h-8 text-white fill-current relative z-10" />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            Engineering<span className="text-indigo-400">Flow</span>
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            Engineering<span className="text-indigo-600">Flow</span>
           </h1>
-          <p className="text-slate-400 mt-1 text-sm">Project Management Platform</p>
+          <p className="text-slate-500 mt-2 text-sm font-medium tracking-wide uppercase">Project Management Platform</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white/[0.05] backdrop-blur-xl rounded-2xl border border-white/10 p-8 shadow-2xl">
+        <div className="bg-white rounded-3xl border border-slate-100 p-8 pt-10 shadow-xl shadow-slate-200/50 relative">
           {error && (
-            <div className="mb-5 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-sm">
+            <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm font-medium flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0" />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all text-sm"
-                placeholder="your@email.com"
+                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-sm font-medium"
+                placeholder="engineering@company.com"
                 required
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-bold text-slate-700">Password</label>
+                <a href="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">Forgot password?</a>
+              </div>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white placeholder-slate-500 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all text-sm pr-10"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-sm font-medium pr-12"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -134,51 +138,51 @@ export default function LoginClientPage() {
               type="submit"
               disabled={loading}
               className={cn(
-                'w-full py-2.5 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2 text-sm mt-2',
+                'w-full py-3.5 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 text-sm mt-4',
                 loading
-                  ? 'bg-indigo-500/50 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-lg shadow-indigo-500/30'
+                  ? 'bg-indigo-400 cursor-not-allowed hidden'
+                  : 'bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 transform hover:-translate-y-0.5 active:translate-y-0'
               )}
             >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</> : 'Sign In'}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Authenticating...</> : 'Sign In'}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-slate-500 flex items-center gap-1.5">
-              <FlaskConical className="w-3 h-3" /> Demo Access
+          <div className="flex items-center gap-4 my-8">
+            <div className="flex-1 h-px bg-slate-100" />
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+              <FlaskConical className="w-3 h-3" /> Quick Access
             </span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-slate-100" />
           </div>
 
           {/* Demo Role Bypass Buttons */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {DEMO_ACCOUNTS.map(account => (
               <button
                 key={account.label}
                 onClick={() => handleDemo(account)}
                 disabled={!!demoLoading}
                 className={cn(
-                  'flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all',
+                  'flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all shadow-sm',
                   account.color,
-                  demoLoading === account.label ? 'opacity-70' : ''
+                  demoLoading === account.label ? 'opacity-70 cursor-not-allowed' : ''
                 )}
               >
                 {demoLoading === account.label ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
                 ) : null}
-                Login as {account.label}
+                {account.label} Portal
               </button>
             ))}
           </div>
-          <p className="text-center text-[11px] text-slate-500 mt-3">
-            Demo accounts use password: <code className="bg-white/10 px-1 rounded">admin123</code>
+          <p className="text-center text-[11px] font-medium text-slate-400 mt-5 bg-slate-50 py-2 rounded-lg border border-slate-100">
+            Demo password: <code className="bg-white border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded ml-1">admin123</code>
           </p>
         </div>
 
-        <p className="text-center text-xs text-slate-600 mt-6">© 2026 EngineeringFlow. All rights reserved.</p>
+        <p className="text-center text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-8">© 2026 EngineeringFlow Systems.</p>
       </div>
     </div>
   );

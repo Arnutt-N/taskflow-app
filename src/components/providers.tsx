@@ -23,10 +23,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
           position="top-right"
           richColors
           closeButton
+          style={{ '--toast-close-button-start': 'auto', '--toast-close-button-end': '1rem' } as React.CSSProperties}
           toastOptions={{
             duration: 4000,
             classNames: {
-              toast: 'font-sans text-sm rounded-xl border border-slate-100 shadow-lg',
+              toast: 'font-sans text-sm rounded-xl border border-slate-100 shadow-lg pr-12',
+              closeButton: '!bg-transparent !border-0 text-slate-400 hover:text-slate-800 transition-colors [&>svg]:w-4 [&>svg]:h-4',
             },
           }}
         />
