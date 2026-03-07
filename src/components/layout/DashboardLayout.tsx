@@ -86,11 +86,13 @@ function RoleBadge({ role }: { role?: string }) {
 
 // ─── Notification Panel ───────────────────────────────────────────────────────
 function NotificationPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { data: notifications = [] } = useQuery({
+  const { data } = useQuery({
     queryKey: ['notifications'],
     queryFn: () => fetch('/api/notifications').then(r => r.json()),
     enabled: open,
   });
+  // Ensure notifications is always an array
+  const notifications = Array.isArray(data) ? data : [];
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
