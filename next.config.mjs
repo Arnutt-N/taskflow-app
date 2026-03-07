@@ -7,11 +7,6 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   
-  // ESLint
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
-  
   // Image optimization (ถ้าจะใช้ next/image)
   images: {
     remotePatterns: [],
