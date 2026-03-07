@@ -8,7 +8,9 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const isAdmin = (req.auth?.user as any)?.role === 'admin';
+  const role = (req.auth?.user as { role?: string })?.role;
+  const isAdmin = role === 'ADMIN';
+  const isPMOrAdmin = ['ADMIN', 'PM'].includes(role || '');
 
   const res = NextResponse.next();
 
@@ -39,6 +41,11 @@ export default auth((req) => {
     return NextResponse.redirect(new URL('/', nextUrl));
   }
 
+  // Forward role to page for RBAC hints
+  if (role) {
+    res.headers.set('x-user-role', role);
+  }
+
   return res;
 });
 
@@ -46,3 +53,4 @@ export const config = {
   // Avoid matching NextAuth route handlers; middleware wrapping can interfere with auth endpoints.
   matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
 };
+

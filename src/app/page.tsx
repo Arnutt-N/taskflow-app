@@ -1,6 +1,9 @@
-import { auth } from '@/app/api/auth/[...nextauth]/route';
+import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { DashboardClient } from '@/components/dashboard/DashboardClient';
+import { prisma } from '@/lib/prisma';
+import { Project, Task } from '@/types';
 
 export default async function HomePage() {
   const session = await auth();
@@ -9,25 +12,60 @@ export default async function HomePage() {
     redirect('/login');
   }
 
+  let rawProjects: any[] = [];
+  let rawTasks: any[] = [];
+  
+  try {
+    // Fetch all projects and tasks for the executive overview
+    // In a real huge app, we'd paginate or filter by active only, 
+    // but for the dashboard overview we pull what we need to compute stats.
+    rawProjects = await prisma.project.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
+    
+    rawTasks = await prisma.task.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
+  } catch (error) {
+    console.error("Failed to fetch dashboard data from Prisma:", error);
+    // Fallback to empty state if DB is unreachable
+  }
+
+  // Convert Prisma Types to our Frontend Types
+  // Ensure we safely map dates and potential nulls
+  const projects: Project[] = rawProjects.map(p => ({
+    id: p.id,
+    name: p.name,
+    team: p.team || 'Unassigned',
+    status: p.status as Project['status'],
+    deadline: p.deadline.toISOString(),
+    progress: p.progress,
+    budget: p.budget ? Number(p.budget) : 0,
+    revenue: p.revenue ? Number(p.revenue) : 0,
+    members: p.members || [],
+    createdAt: p.createdAt.toISOString(),
+    updatedAt: p.updatedAt.toISOString(),
+  }));
+
+  const tasks: Task[] = rawTasks.map(t => ({
+    id: t.id,
+    projectId: t.projectId,
+    title: t.title,
+    assignee: t.assignee || 'Unassigned',
+    status: t.status as Task['status'],
+    priority: t.priority as Task['priority'],
+    dueDate: t.dueDate ? t.dueDate.toISOString() : undefined,
+    createdAt: t.createdAt.toISOString(),
+  }));
+
   return (
     <DashboardLayout>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold text-slate-800 mb-4">
-          Welcome back, {session.user.name}!
-        </h1>
-        <p className="text-slate-600">
-          Engineering Taskflow v2 is under construction. 🚧
-        </p>
-        <div className="mt-8 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-          <h2 className="font-semibold text-slate-700 mb-2">What's New</h2>
-          <ul className="list-disc list-inside text-slate-600 space-y-1">
-            <li>NextAuth v5 with Prisma</li>
-            <li>Protected routes with middleware</li>
-            <li>User management (Admin only)</li>
-            <li>Notification system</li>
-            <li>New UI coming soon...</li>
-          </ul>
-        </div>
+      <div className="pt-4">
+        <DashboardClient 
+          projects={projects} 
+          tasks={tasks} 
+          userName={session.user?.name || 'User'} 
+        />
       </div>
     </DashboardLayout>
   );

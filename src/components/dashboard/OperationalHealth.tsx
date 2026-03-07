@@ -1,8 +1,7 @@
-// components/dashboard/OperationalHealth.tsx
 'use client';
 
-import { LayoutDashboard, ChevronRight, Plus } from 'lucide-react';
-import { DonutChart } from '@/components/ui';
+import { LayoutDashboard, ArrowUpRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Stats } from '@/types';
 
 interface OperationalHealthProps {
@@ -10,77 +9,81 @@ interface OperationalHealthProps {
   onViewTasks: () => void;
 }
 
-export const OperationalHealth = ({ stats, onViewTasks }: OperationalHealthProps) => {
-  const chartData = [
-    { label: 'Done', value: stats.tasks.done, color: '#10b981' }, 
-    { label: 'In Progress', value: stats.tasks.inProgress, color: '#3b82f6' }, 
-    { label: 'Todo', value: stats.tasks.todo, color: '#fbbf24' }, 
-  ];
+export const OperationalHealth = ({ 
+  stats,
+  onViewTasks
+}: OperationalHealthProps) => {
+  const totalTasks = stats.tasks?.total || 0;
+  const doneTasks = stats.tasks?.done || 0;
+  const inProgressTasks = stats.tasks?.inProgress || 0;
+  const todoTasks = stats.tasks?.todo || 0;
+  const reviewTasks = stats.tasks?.review || 0;
+  const planningTasks = stats.tasks?.planning || 0;
+  const router = useRouter();
+
+  const getPercent = (count: number) => totalTasks > 0 ? (count / totalTasks) * 100 : 0;
+  
+  const donePercent = getPercent(doneTasks);
+  const reviewPercent = getPercent(reviewTasks);
+  const inProgressPercent = getPercent(inProgressTasks);
+  const planningPercent = getPercent(planningTasks);
+  const todoPercent = getPercent(todoTasks);
 
   return (
-    <div className="xl:col-span-1 space-y-6">
-      <div className="bg-white rounded-2xl p-6 shadow-clean border border-slate-100">
-        <div>
-          <h3 className="font-bold text-lg mb-1 text-slate-800 flex items-center gap-2">
-            <LayoutDashboard className="w-4 h-4 text-indigo-500" />
-            Operational Health
-          </h3>
-          <p className="text-slate-400 text-sm mb-6">ภาพรวมสถานะงานสำหรับทีมปฏิบัติการ</p>
-          
-          <div className="flex items-end gap-2 mb-2">
-            <span className="text-4xl font-bold text-slate-800">{stats.tasks.total}</span>
-            <span className="text-sm text-slate-400 mb-1.5">Total Tasks</span>
-          </div>
-          
-          <div className="w-full bg-slate-100 rounded-full h-2 mb-6 flex overflow-hidden">
-            <div className="bg-emerald-500 h-full" style={{ 
-              width: `${stats.tasks.total > 0 ? (stats.tasks.done / stats.tasks.total) * 100 : 0}%` 
-            }} />
-            <div className="bg-amber-400 h-full" style={{ 
-              width: `${stats.tasks.total > 0 ? (stats.tasks.todo / stats.tasks.total) * 100 : 0}%` 
-            }} />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              className="bg-slate-50 rounded-xl p-3 hover:bg-slate-100 border border-slate-100 text-left"
-              onClick={onViewTasks}
-            >
-              <div className="text-2xl font-bold text-emerald-600">{stats.tasks.done}</div>
-              <div className="text-xs text-slate-400 uppercase font-semibold">Done</div>
-            </button>
-            <button
-              type="button"
-              className="bg-slate-50 rounded-xl p-3 hover:bg-slate-100 border border-slate-100 text-left"
-              onClick={onViewTasks}
-            >
-              <div className="text-2xl font-bold text-amber-500">{stats.tasks.todo}</div>
-              <div className="text-xs text-slate-400 uppercase font-semibold">Pending</div>
-            </button>
-          </div>
-        </div>
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col h-full">
+      <div className="mb-6">
+        <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
+          <LayoutDashboard className="w-5 h-5 text-indigo-500" />
+          Operational Health
+        </h3>
+        <p className="text-slate-400 text-sm mt-0.5">ภาพรวมสถานะงานสำหรับทีมปฏิบัติการ</p>
       </div>
 
-      <div className="bg-white rounded-2xl p-6 shadow-clean border border-slate-100">
-        <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Quick Actions</h4>
-        <button
-          type="button"
-          onClick={onViewTasks}
-          className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors group mb-2 border border-slate-100"
-        >
-          <span className="text-sm font-medium">เปิดรายการงานทั้งหมด</span>
-          <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+      <div className="flex items-end gap-2 mb-3">
+        <span className="text-4xl font-black text-slate-800 tracking-tight">{totalTasks}</span>
+        <span className="text-sm font-medium text-slate-400 mb-1.5">Total Tasks ใน scope</span>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="w-full bg-slate-100 rounded-full h-2 mb-6 flex overflow-hidden">
+        <div className="bg-amber-400 h-full transition-all duration-1000" style={{ width: `${todoPercent}%` }} title={`Todo: ${todoTasks}`} />
+        <div className="bg-violet-400 h-full transition-all duration-1000" style={{ width: `${planningPercent}%` }} title={`Planning: ${planningTasks}`} />
+        <div className="bg-indigo-400 h-full transition-all duration-1000" style={{ width: `${inProgressPercent}%` }} title={`Doing: ${inProgressTasks}`} />
+        <div className="bg-blue-400 h-full transition-all duration-1000" style={{ width: `${reviewPercent}%` }} title={`Review: ${reviewTasks}`} />
+        <div className="bg-emerald-500 h-full transition-all duration-1000" style={{ width: `${donePercent}%` }} title={`Done: ${doneTasks}`} />
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-5 gap-2 mb-6 flex-1">
+        <button onClick={() => router.push('/tasks')} className="bg-slate-50 hover:bg-amber-50 rounded-xl p-2 cursor-pointer transition-colors border border-slate-100 group text-center flex flex-col items-center justify-center">
+          <div className="text-xl font-black text-amber-500 group-hover:scale-110 transition-transform">{todoTasks}</div>
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1">Todo</div>
         </button>
-        
-        <button
-          type="button"
-          className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors group border border-slate-100"
-        >
-          <span className="text-sm font-medium">สร้างรายงานสรุป (Coming soon)</span>
-          <Plus className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+        <button onClick={() => router.push('/tasks')} className="bg-slate-50 hover:bg-violet-50 rounded-xl p-2 cursor-pointer transition-colors border border-slate-100 group text-center flex flex-col items-center justify-center">
+          <div className="text-xl font-black text-violet-500 group-hover:scale-110 transition-transform">{planningTasks}</div>
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1">Planning</div>
+        </button>
+        <button onClick={() => router.push('/tasks')} className="bg-slate-50 hover:bg-indigo-50 rounded-xl p-2 cursor-pointer transition-colors border border-slate-100 group text-center flex flex-col items-center justify-center">
+          <div className="text-xl font-black text-indigo-500 group-hover:scale-110 transition-transform">{inProgressTasks}</div>
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1">Doing</div>
+        </button>
+        <button onClick={() => router.push('/tasks')} className="bg-slate-50 hover:bg-blue-50 rounded-xl p-2 cursor-pointer transition-colors border border-slate-100 group text-center flex flex-col items-center justify-center">
+          <div className="text-xl font-black text-blue-500 group-hover:scale-110 transition-transform">{reviewTasks}</div>
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1">Review</div>
+        </button>
+        <button onClick={() => router.push('/tasks')} className="bg-slate-50 hover:bg-emerald-50 rounded-xl p-2 cursor-pointer transition-colors border border-slate-100 group text-center flex flex-col items-center justify-center">
+          <div className="text-xl font-black text-emerald-600 group-hover:scale-110 transition-transform">{doneTasks}</div>
+          <div className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1">Done</div>
         </button>
       </div>
+
+      {/* Quick Action */}
+      <button 
+        onClick={onViewTasks}
+        className="mt-4 w-full py-2.5 text-xs font-bold text-slate-500 hover:text-indigo-600 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors flex items-center justify-center gap-1"
+      >
+        View Tasks <ArrowUpRight className="w-3 h-3" />
+      </button>
     </div>
   );
 };

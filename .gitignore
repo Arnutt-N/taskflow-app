@@ -52,3 +52,5 @@ next-env.d.ts
 Thumbs.db
 
 /src/generated/prisma
+
+/project-log-md/*

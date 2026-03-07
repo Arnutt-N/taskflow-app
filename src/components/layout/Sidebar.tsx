@@ -64,15 +64,9 @@ export const Sidebar = ({ activeTab, onlyMyTasks, onTabChange }: SidebarProps) =
           <div className="space-y-1">
             <SidebarItem 
               icon={CheckCircle2}
-              label="My Tasks"
-              active={activeTab === 'tasks' && onlyMyTasks}
+              label="Tasks"
+              active={activeTab === 'tasks'}
               onClick={() => onTabChange('tasks', true)}
-            />
-            <SidebarItem 
-              icon={ListTodo}
-              label="All Tasks"
-              active={activeTab === 'tasks' && !onlyMyTasks}
-              onClick={() => onTabChange('tasks', false)}
             />
           </div>
         </div>

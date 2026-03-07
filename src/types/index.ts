@@ -15,6 +15,7 @@ export interface Project {
   taskCount?: number;
   doneTasks?: number;
   members?: string[];
+  priority?: 'High' | 'Medium' | 'Low';
 }
 
 export interface Task {
@@ -42,6 +43,8 @@ export interface Stats {
     done: number;
     inProgress: number;
     todo: number;
+    review?: number;
+    planning?: number;
   };
 }
 

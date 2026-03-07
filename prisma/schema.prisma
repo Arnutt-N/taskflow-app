@@ -9,28 +9,69 @@ datasource db {
 
 // ==================== USERS ====================
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  role      Role     @default(USER)
-  password  String   // bcrypt hash
-  avatar    String?
+  id           String      @id @default(cuid())
+  email        String      @unique
+  name         String
+  role         Role        @default(USER)
+  password     String      // bcrypt hash
+  avatar       String?
+  departmentId String?     @map("department_id")
+  teamId       String?     @map("team_id")
   
   // Relations
-  tasks     Task[]         @relation("AssignedTasks")
-  comments  Comment[]
-  activities ActivityLog[]
+  tasks        Task[]         @relation("AssignedTasks")
+  comments     Comment[]
+  activities   ActivityLog[]
   notifications Notification[]
+  department   Department?   @relation("DepartmentUsers", fields: [departmentId], references: [id])
+  team         Team?         @relation("TeamMembers", fields: [teamId], references: [id])
   
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 enum Role {
   ADMIN
+  PM
+  LEAD
+  STAFF
   USER
+}
+
+// ==================== DEPARTMENTS ====================
+model Department {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?  @db.Text
+  color       String   @default("#6366f1")
+  
+  // Relations
+  teams       Team[]
+  users       User[]   @relation("DepartmentUsers")
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("departments")
+}
+
+// ==================== TEAMS ====================
+model Team {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?     @db.Text
+  departmentId String?     @map("department_id")
+  
+  // Relations
+  department   Department? @relation(fields: [departmentId], references: [id])
+  members      User[]      @relation("TeamMembers")
+  
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("teams")
 }
 
 // ==================== PROJECTS ====================
