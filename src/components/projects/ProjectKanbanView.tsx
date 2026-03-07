@@ -11,6 +11,7 @@ import {
   useSensor,
   useSensors,
   closestCorners,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -126,10 +127,19 @@ function KanbanColumn({
   const wipLimit = column.id === 'In Progress' ? 3 : (column.id === 'Review' ? 4 : null);
   const isOverLimit = wipLimit !== null && projects.length > wipLimit;
 
+  // Make column a droppable zone so it accepts drops even when empty
+  const { setNodeRef, isOver: isOverDroppable } = useDroppable({
+    id: column.id,
+  });
+
+  // Use the droppable's isOver state if available, otherwise fallback to prop
+  const droppableIsOver = isOverDroppable || isOver;
+
   return (
     <div
+      ref={setNodeRef}
       className={`flex-none w-[320px] max-w-[85vw] flex flex-col h-full max-h-full rounded-2xl border ${column.border} overflow-hidden shadow-sm bg-slate-50/50 transition-colors
-        ${isOver ? 'ring-2 ring-indigo-300 bg-indigo-50/40' : ''}
+        ${droppableIsOver ? 'ring-2 ring-indigo-300 bg-indigo-50/40' : ''}
       `}
     >
       <div className={`px-4 py-3 border-b ${column.border} flex items-center justify-between ${column.color} shrink-0`}>
@@ -169,7 +179,9 @@ function KanbanColumn({
           </button>
         )}
         {projects.length === 0 && (
-          <div className="border-2 border-dashed border-slate-200 rounded-xl h-24 flex items-center justify-center text-slate-400 text-sm font-medium">
+          <div className={`border-2 border-dashed rounded-xl h-24 flex items-center justify-center text-sm font-medium transition-colors
+            ${droppableIsOver ? 'border-indigo-400 bg-indigo-50/50 text-indigo-600' : 'border-slate-200 text-slate-400'}
+          `}>
             Drop here
           </div>
         )}

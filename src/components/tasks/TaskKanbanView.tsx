@@ -11,6 +11,7 @@ import {
   useSensor,
   useSensors,
   closestCorners,
+  useDroppable,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -129,13 +130,21 @@ function KanbanColumn({
   tasks: Task[];
   isOver: boolean;
 }) {
+  const { setNodeRef, isOver: isOverDroppable } = useDroppable({
+    id: column.id,
+  });
+
+  // Use the droppable's isOver state if available, otherwise fallback to prop
+  const droppableIsOver = isOverDroppable || isOver;
+
   return (
     <div
+      ref={setNodeRef}
       className={`
         flex-none w-72 flex flex-col rounded-2xl border border-slate-200/70
         border-t-4 ${column.color} ${column.bg}
         transition-colors duration-150
-        ${isOver ? 'border-indigo-300 bg-indigo-50/30 shadow-inner' : ''}
+        ${droppableIsOver ? 'border-indigo-300 bg-indigo-50/30 shadow-inner' : ''}
       `}
     >
       {/* Column Header */}
@@ -200,8 +209,16 @@ export const TaskKanbanView = ({ tasks, onTaskStatusChange }: TaskKanbanViewProp
 
   function onDragOver({ active, over }: DragOverEvent) {
     if (!over) { setOverId(null); return; }
-    const overColId = KANBAN_COLUMNS.find(c => c.id === over.id)?.id
-      ?? findColumnOfTask(over.id as string);
+    
+    // Check if we're directly over a column
+    const overColumn = KANBAN_COLUMNS.find(c => c.id === over.id);
+    if (overColumn) {
+      setOverId(overColumn.id);
+      return;
+    }
+    
+    // Otherwise find column from the task being hovered over
+    const overColId = findColumnOfTask(over.id as string);
     setOverId(overColId || null);
   }
 
@@ -211,8 +228,15 @@ export const TaskKanbanView = ({ tasks, onTaskStatusChange }: TaskKanbanViewProp
     if (!over) return;
 
     const activeId = active.id as string;
-    const overColId = KANBAN_COLUMNS.find(c => c.id === over.id)?.id
-      ?? findColumnOfTask(over.id as string);
+
+    // Check if we're directly over a column
+    const overColumn = KANBAN_COLUMNS.find(c => c.id === over.id);
+    let overColId = overColumn?.id;
+    
+    // If not over a column, try to find from the task
+    if (!overColId) {
+      overColId = findColumnOfTask(over.id as string);
+    }
 
     if (!overColId) return;
 
