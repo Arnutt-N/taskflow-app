@@ -2,13 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   
-  // Next.js 16: Optimize caching
-  cacheHandler: process.env.CACHE_HANDLER_PATH,
-  cacheMaxMemorySize: process.env.CACHE_MAX_MEMORY_SIZE,
-  
-  // Optimize builds
-  swcMinify: true,
-  
   // TypeScript validation
   typescript: {
     ignoreBuildErrors: false,
