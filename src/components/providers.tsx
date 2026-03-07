@@ -22,12 +22,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Toaster
           position="top-right"
           richColors
-          closeButton
           toastOptions={{
             duration: 4000,
             classNames: {
-              toast: 'font-sans text-sm rounded-xl border border-slate-100 shadow-lg pr-8',
-              closeButton: '!bg-transparent !border-0 !shadow-none !text-slate-400 hover:!text-slate-600 !rounded-full !p-1 !w-6 !h-6 !right-2 top-1/2 -translate-y-1/2',
+              toast: 'font-sans text-sm rounded-xl border border-slate-100 shadow-lg',
             },
           }}
         />
