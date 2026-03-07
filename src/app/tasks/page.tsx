@@ -6,6 +6,7 @@ import { Plus, ListTodo, Users, CheckCircle2, LayoutDashboard } from 'lucide-rea
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useSession } from 'next-auth/react';
 import { TaskTableView } from '@/components/tasks/TaskTableView';
+import { ImportExportToolbar } from '@/components/ui';
 
 interface Task {
   id: string;
@@ -65,47 +66,49 @@ export default function TasksPage() {
     <DashboardLayout>
       <div className="p-4 lg:p-8 space-y-6 max-w-screen-2xl mx-auto">
         
-        {/* ── 1. Page Header & View Toggle ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="space-y-4">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Task Manager</h1>
-              <p className="text-slate-500 text-sm mt-1">
-                {viewMode === 'my' ? 'Manage your assigned tasks and priorities.' : 'Overview of all tasks across the workspace.'}
-              </p>
-            </div>
-            
-            {/* View Switcher Controls */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-xl inline-flex">
-              <button
-                onClick={() => setViewMode('my')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  viewMode === 'my' 
-                    ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-slate-900/5' 
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
-                }`}
-              >
-                <ListTodo className="w-4 h-4" />
-                My Tasks
-              </button>
-              <button
-                onClick={() => setViewMode('all')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  viewMode === 'all' 
-                    ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-slate-900/5' 
-                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                All Tasks
-              </button>
-            </div>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Task Manager</h1>
+            <p className="text-slate-500 text-sm mt-1">
+              {viewMode === 'my' ? 'Manage your assigned tasks and priorities.' : 'Overview of all tasks across the workspace.'}
+            </p>
           </div>
+          <div className="flex items-center gap-3">
+            <ImportExportToolbar type="tasks" />
+            <button className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm text-sm font-medium">
+              <Plus className="w-4 h-4 sm:mr-2 flex-shrink-0" />
+              <span className="hidden sm:inline">New Task</span>
+            </button>
+          </div>
+        </div>
 
-          <button className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition duration-200 shadow-sm shadow-indigo-200">
-            <Plus className="w-5 h-5" />
-            New Task
-          </button>
+        {/* View Switcher Controls */}
+        <div className="flex justify-start">
+          <div className="flex items-center p-1.5 bg-slate-100 rounded-xl inline-flex border border-slate-200 shadow-sm">
+            <button
+              onClick={() => setViewMode('my')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                viewMode === 'my' 
+                  ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/50' 
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+              }`}
+            >
+              <ListTodo className="w-4 h-4" />
+              My Tasks
+            </button>
+            <button
+              onClick={() => setViewMode('all')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                viewMode === 'all' 
+                  ? 'bg-white text-indigo-700 shadow-sm border border-slate-200/50' 
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              All Tasks
+            </button>
+          </div>
         </div>
 
         {/* ── 2. Top Stats ── */}

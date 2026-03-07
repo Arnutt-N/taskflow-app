@@ -201,7 +201,7 @@ export const ProjectCalendarView = ({ projects, onProjectClick }: ProjectCalenda
                         <input
                             type="text"
                             placeholder="Find projects..."
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner"
+                            className="w-full px-3 h-10 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
@@ -218,7 +218,7 @@ export const ProjectCalendarView = ({ projects, onProjectClick }: ProjectCalenda
                             <div>
                                 <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Status</label>
                                 <select
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 h-10 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
                                 >
@@ -229,7 +229,7 @@ export const ProjectCalendarView = ({ projects, onProjectClick }: ProjectCalenda
                             <div>
                                 <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Team</label>
                                 <select
-                                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 h-10 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
                                     value={teamFilter}
                                     onChange={(e) => setTeamFilter(e.target.value)}
                                 >

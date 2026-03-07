@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { StatusBadge } from '@/components/ui';
-import { Search, Filter, ArrowUpDown, Calendar, Flag, CheckSquare, MessageSquare } from 'lucide-react';
+import { Search, Filter, ArrowUpDown, Calendar, Flag, Check, MessageSquare } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -137,15 +137,16 @@ export const TaskTableView = ({ tasks }: TaskTableViewProps) => {
     }
   };
 
-  const toggleSelectTask = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newSelected = new Set(selectedTasks);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedTasks(newSelected);
+  const toggleSelectTask = (id: string) => {
+    setSelectedTasks(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   };
 
   const handleSort = (field: SortField) => {
@@ -218,10 +219,13 @@ export const TaskTableView = ({ tasks }: TaskTableViewProps) => {
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
-                <th scope="col" className="p-4 w-12 text-center">
-                  <button onClick={toggleSelectAll} className={`w-4 h-4 rounded border flex items-center justify-center transition-colors mx-auto ${isAllCurrentPageSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-slate-300 bg-white hover:border-indigo-400'}`}>
-                    {isAllCurrentPageSelected && <CheckSquare className="w-3 h-3" />}
-                  </button>
+                <th scope="col" className="pl-8 pr-4 py-4 w-12 text-center bg-slate-50/50">
+                  <input 
+                    type="checkbox" 
+                    checked={isAllCurrentPageSelected}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer transition-all"
+                  />
                 </th>
                 <th scope="col" className="px-6 py-4 font-semibold tracking-wider cursor-pointer hover:bg-slate-100 group" onClick={() => handleSort('title')}>
                   <div className="flex items-center gap-2">Task <ArrowUpDown className={`w-3.5 h-3.5 ${sortField === 'title' ? 'text-indigo-500' : 'text-slate-300 opacity-0 group-hover:opacity-100'}`} /></div>
@@ -241,7 +245,7 @@ export const TaskTableView = ({ tasks }: TaskTableViewProps) => {
                 <th scope="col" className="px-6 py-4 font-semibold tracking-wider cursor-pointer hover:bg-slate-100 group" onClick={() => handleSort('dueDate')}>
                   <div className="flex items-center gap-2">Due Date <ArrowUpDown className={`w-3.5 h-3.5 ${sortField === 'dueDate' ? 'text-indigo-500' : 'text-slate-300 opacity-0 group-hover:opacity-100'}`} /></div>
                 </th>
-                <th scope="col" className="px-6 py-4 text-right font-semibold tracking-wider cursor-pointer hover:bg-slate-100 group" onClick={() => handleSort('hours')}>
+                <th scope="col" className="pl-6 pr-8 py-4 text-right font-semibold tracking-wider cursor-pointer hover:bg-slate-100 group" onClick={() => handleSort('hours')}>
                   <div className="flex items-center justify-end gap-2"><ArrowUpDown className={`w-3.5 h-3.5 ${sortField === 'hours' ? 'text-indigo-500' : 'text-slate-300 opacity-0 group-hover:opacity-100'}`} /> Hours</div>
                 </th>
               </tr>
@@ -254,10 +258,13 @@ export const TaskTableView = ({ tasks }: TaskTableViewProps) => {
                   
                   return (
                     <tr key={task.id} className={`hover:bg-slate-50 transition-colors ${isSelected ? 'bg-indigo-50/40' : task.status === 'DONE' ? 'opacity-60 bg-slate-50/50' : 'bg-white'}`}>
-                      <td className="p-4 text-center">
-                        <button onClick={(e) => toggleSelectTask(task.id, e)} className={`w-4 h-4 rounded border flex items-center justify-center transition-colors mx-auto ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-slate-300 bg-white hover:border-indigo-400'}`}>
-                          {isSelected && <CheckSquare className="w-3 h-3" />}
-                        </button>
+                      <td className="pl-8 pr-4 py-4 text-center">
+                        <input 
+                          type="checkbox" 
+                          checked={isSelected}
+                          onChange={() => toggleSelectTask(task.id)}
+                          className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer transition-all"
+                        />
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium text-slate-800 line-clamp-1">{task.title}</div>
@@ -298,7 +305,7 @@ export const TaskTableView = ({ tasks }: TaskTableViewProps) => {
                           <span className="text-slate-300">-</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-right whitespace-nowrap text-sm">
+                      <td className="pl-6 pr-8 py-4 text-right whitespace-nowrap text-sm">
                         <span className="font-medium text-slate-800">{task.actualHours}</span>
                         <span className="text-slate-400"> / {task.estimatedHours}h</span>
                       </td>

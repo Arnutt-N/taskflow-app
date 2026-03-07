@@ -134,26 +134,26 @@ export const ProjectGridView = ({ projects, onProjectClick, selectedProjectId }:
           <input
             type="text"
             placeholder="Search projects or teams..."
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-shadow"
+            className="w-full pl-10 pr-4 h-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-shadow"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-          <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 bg-slate-50">
+          <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 h-10 bg-slate-50">
             <Filter className="w-3.5 h-3.5 text-slate-500" />
             <select
-              className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium"
+              className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium h-full"
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
             >
               {statuses.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
-          <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 bg-slate-50">
+          <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-3 h-10 bg-slate-50">
             <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
             <select
-              className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium"
+              className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium h-full"
               value={sortField}
               onChange={e => setSortField(e.target.value as SortField)}
             >
@@ -164,7 +164,7 @@ export const ProjectGridView = ({ projects, onProjectClick, selectedProjectId }:
             </select>
             <button
               onClick={() => setSortOrder(o => o === 'asc' ? 'desc' : 'asc')}
-              className="text-slate-400 hover:text-slate-700 px-1"
+              className="text-slate-400 hover:text-slate-700 px-1 h-full flex items-center"
               title="Toggle order"
             >
               {sortOrder === 'asc' ? '↑' : '↓'}

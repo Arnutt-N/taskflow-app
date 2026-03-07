@@ -35,7 +35,7 @@ export const ProjectsView = ({ projects, onProjectClick, selectedProjectId }: Pr
   return (
     <div className="space-y-5 animate-in max-w-[1600px] mx-auto pb-10">
       {/* ── View Switcher ── */}
-      <div className="flex justify-end">
+      <div className="flex justify-start">
         <div className="flex bg-slate-100 p-1.5 rounded-xl w-fit border border-slate-200 shadow-sm overflow-x-auto">
           {views.map(({ key, label, Icon }) => (
             <button

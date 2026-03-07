@@ -278,15 +278,15 @@ export const ProjectKanbanView = ({ projects, onProjectStatusChange, onProjectCl
           <input
             type="text"
             placeholder="Search in board..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-inner"
+            className="w-full pl-9 pr-4 h-10 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-inner"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="relative flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 w-full sm:w-auto">
+        <div className="relative flex items-center gap-2 border border-slate-200 rounded-lg px-3 h-10 bg-slate-50 w-full sm:w-auto">
           <Filter className="w-4 h-4 text-slate-500" />
           <select
-            className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium"
+            className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium h-full"
             value={teamFilter}
             onChange={(e) => setTeamFilter(e.target.value)}
           >

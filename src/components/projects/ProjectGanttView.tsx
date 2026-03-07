@@ -140,16 +140,16 @@ export const ProjectGanttView = ({ projects, onProjectClick }: ProjectGanttViewP
                         <input
                             type="text"
                             placeholder="Find projects..."
-                            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-inner"
+                            className="w-full pl-9 pr-4 h-10 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-inner"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
                     
-                    <div className="relative flex items-center gap-2 border border-slate-200 rounded-lg px-3 py-2 bg-slate-50 shrink-0">
+                    <div className="relative flex items-center gap-2 border border-slate-200 rounded-lg px-3 h-10 bg-slate-50 shrink-0">
                         <Filter className="w-4 h-4 text-slate-500" />
                         <select
-                            className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium"
+                            className="text-sm bg-transparent outline-none cursor-pointer text-slate-700 font-medium h-full"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >

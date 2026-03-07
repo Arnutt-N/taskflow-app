@@ -177,9 +177,7 @@ export default function LoginClientPage() {
               </button>
             ))}
           </div>
-          <p className="text-center text-[11px] font-medium text-slate-400 mt-5 bg-slate-50 py-2 rounded-lg border border-slate-100">
-            Demo password: <code className="bg-white border border-slate-200 text-slate-600 px-1.5 py-0.5 rounded ml-1">admin123</code>
-          </p>
+
         </div>
 
         <p className="text-center text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-8">© 2026 EngineeringFlow Systems.</p>

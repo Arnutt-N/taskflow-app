@@ -5,6 +5,7 @@ import { Plus, Download, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ProjectsView } from '@/components/projects';
+import { ImportExportToolbar } from '@/components/ui';
 import { Project } from '@/types';
 
 export default function ProjectsPage() {
@@ -70,15 +71,8 @@ export default function ProjectsPage() {
               Manage and track all your projects
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="inline-flex items-center px-3 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm text-sm font-medium">
-              <Upload className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Import</span>
-            </button>
-            <button className="inline-flex items-center px-3 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm text-sm font-medium">
-              <Download className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Export</span>
-            </button>
+          <div className="flex items-center gap-3">
+            <ImportExportToolbar type="projects" />
             <button className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm text-sm font-medium">
               <Plus className="w-4 h-4 sm:mr-2 flex-shrink-0" />
               <span className="hidden sm:inline">New Project</span>
