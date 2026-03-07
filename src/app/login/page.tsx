@@ -33,8 +33,8 @@ export default function LoginClientPage() {
       return false;
     }
     toast.success(label ? `Signed in as ${label}` : 'Signed in successfully');
-    router.push('/');
-    router.refresh();
+    // Use window.location for reliable redirect on production/Vercel
+    window.location.href = '/';
     return true;
   };
 
